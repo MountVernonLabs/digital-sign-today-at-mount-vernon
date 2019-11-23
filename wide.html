@@ -82,7 +82,7 @@
 						}
 						return parseFloat($(this).attr("class")) < addZeroBefore(d.getHours())+addZeroBefore(d.getMinutes())+addZeroBefore(d.getSeconds());
 					}).hide();
-				}, 3000);				
+				}, 6000);				
 				
 				
 				// Get date and monitor for changes
@@ -95,7 +95,7 @@
 						$("#heading").text(new_date_title);
 						populate();
 					}
-				}, 3000);
+				}, 15000);
 	
 				// Clock
 				function startTime() {
