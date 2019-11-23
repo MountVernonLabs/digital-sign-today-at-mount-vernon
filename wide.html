@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<style>
+				body{
+					margin:0;
+					overflow:hidden;
+				}
+				.wrapper{
+					
+					background-color:#000;
+					color:#fff;
+				}
+		</style>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	</head>
+
+	<body>
+
+		<div class="wrapper">
+			<h1>Hello World</h1>
+		</div>
+		<script>
+			$.getJSON("http://www.mountvernon.org/site/api/events-today",
+				function(data){
+					$.each(data, function(i, item) {
+						// Need to eliminate duplicates
+						// Need to add class to each item
+						// Need to paginate results
+						// Need to make this a recurring function run every X minute instead of just on load
+						// Need to cache page results in the event of internet loss
+						
+						if (item.start_time !== null) {
+							var start_time = item.start_time;
+						} else {
+							var start_time = "All Day";
+						}
+						$(".wrapper").append("<p>"+start_time+": "+item.title+"</p>");
+						var title = item.title;
+						if (item.start_time !== null) {
+							$.each(JSON.parse(item.extra_times), function(i, item) {
+								$(".wrapper").append("<p>"+item.start_time+": "+title+"</p>");
+							});
+						}
+					});
+				});
+		</script>
+	</body>
+</html>
