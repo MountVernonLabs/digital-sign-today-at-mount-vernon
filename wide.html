@@ -93,6 +93,7 @@
 					if ($("#heading").text() != new_date_title) {
 						// This will detect if it's a new day, reset items and re-run functions
 						$("#heading").text(new_date_title);
+						$("#events").empty();
 						populate();
 					}
 				}, 15000);
