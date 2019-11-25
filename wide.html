@@ -11,6 +11,10 @@
 					background-color:#000;
 					color:#fff;
 				}
+				#weather {
+					width: 180px;
+					float: right;
+				}
 		</style>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 		<script src="https://rawgit.com/moment/moment/2.2.1/min/moment.min.js"></script>
@@ -19,6 +23,9 @@
 	<body>
 
 		<div class="wrapper">
+			<div id="weather">
+				<script type='text/javascript' src='https://darksky.net/widget/default-small/38.7141,-77.1044/us12/en.js?width=180&height=70&title=Full Forecast&textColor=ffffff&bgColor=transparent&transparency=true&skyColor=undefined&fontFamily=Default&customFont=&units=us'></script>
+			</div>
 			<h1 id="heading"></h1>
 			<h3 id="time"></h3>
 			<div id="events"></div>
@@ -115,6 +122,13 @@
 					return i;
 				}			
 				startTime();
+				
+				// Reload weather
+				 window.setInterval("reloadIFrame();", 900000);
+
+				 function reloadIFrame() {
+					$('iframe').attr('src', $('iframe').attr('src'));
+				 }
 				
 		</script>
 	</body>
