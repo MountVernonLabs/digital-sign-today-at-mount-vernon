@@ -21,14 +21,110 @@
 					color:#fff;
 				}
 		</style>
-
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+		<script src="https://rawgit.com/moment/moment/2.2.1/min/moment.min.js"></script>
 	</head>
 
 	<body>
 
 		<div class="wrapper">
-			<h1>Hello World</h1>
+			<h1 id="heading"></h1>
+			<h3 id="time"></h3>
+			<div id="events"></div>
 		</div>
-
+		<script>
+			// Get locations
+			var mvloc;
+			$.getJSON("http://www.mountvernon.org/site/api/locations", function(jsonloc){
+				mvloc = jsonloc;
+			});
+						
+			// Get today's events
+			function populate() {
+				$.getJSON("http://www.mountvernon.org/site/api/events-today",
+					function(data){
+						var eventIDs = [];
+						$.each(data, function(i, item) {
+							// Need to paginate results
+							// Need to cache page results in the event of internet loss
+		
+							if ($.inArray(item.id, eventIDs) == -1) {
+								eventIDs.push(item.id);
+								if (item.start_time !== null) {
+									var start_time = item.start_time;
+									var start = start_time.replace(/:/g,"");
+									var start_name = moment(start_time, ["h:mm:ss"]).format("HH:mm A");
+								} else {
+									var start_time = "All Day";
+									var start = "170000";
+									var start_name = "All Day";
+								}
+								$("#events").append("<div class=\""+start+"\"><p>"+start_name+": "+item.title+"</p><div>");
+								var title = item.title;
+								if (item.start_time !== null) {
+									$.each(JSON.parse(item.extra_times), function(i, item) {
+										var start = item.start_time.replace(/:/g,"");
+										$("#events").append("<div class=\""+start+"\"><p>"+moment(item.start_time, ["h:mm:ss"]).format("HH:mm A")+": "+title+"</p><div>");
+									});
+								}
+							}	
+						});
+						var mylist = $('#events');
+						var listitems = mylist.children('div').get();
+						listitems.sort(function(a, b) {
+							var compA = $(a).attr('class');
+							var compB = $(b).attr('class');
+							return (compA < compB) ? -1 : (compA > compB) ? 1 : 0;
+						})
+						$.each(listitems, function(idx, itm) { mylist.append(itm); });
+						
+					});
+				}
+				populate();
+				
+				// Hide all expired events
+				setInterval(function(){ 
+					var d = new Date();	
+					$('#events').children('div').filter(function() {
+						function addZeroBefore(n) {
+							return (n < 10 ? '0' : '') + n;
+						}
+						return parseFloat($(this).attr("class")) < addZeroBefore(d.getHours())+addZeroBefore(d.getMinutes())+addZeroBefore(d.getSeconds());
+					}).hide();
+				}, 6000);				
+				
+				
+				// Get date and monitor for changes
+				setInterval(function(){ 
+					var d = new Date();
+					var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+					var new_date_title = months[d.getMonth()]+" "+d.getDate();
+					if ($("#heading").text() != new_date_title) {
+						// This will detect if it's a new day, reset items and re-run functions
+						$("#heading").text(new_date_title);
+						$("#events").empty();
+						populate();
+					}
+				}, 15000);
+	
+				// Clock
+				function startTime() {
+					var today = new Date();
+					var h = today.getHours();
+					var m = today.getMinutes();
+					var ampm = h >= 12 ? 'PM' : 'AM';
+					h = h % 12;
+					h = h ? h : 12;
+					m = checkTime(m);
+					$("#time").text(h + ":" + m + " " + ampm);
+					var t = setTimeout(startTime, 500);
+				}
+				function checkTime(i) {
+					if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+					return i;
+				}			
+				startTime();
+				
+		</script>
 	</body>
 </html>
