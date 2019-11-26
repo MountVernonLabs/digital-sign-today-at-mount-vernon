@@ -60,7 +60,7 @@
 								if (item.start_time !== null) {
 									var start_time = item.start_time;
 									var start = start_time.replace(/:/g,"");
-									var start_name = moment(start_time, ["h:mm:ss"]).format("HH:mm A");
+									var start_name = moment(start_time, ["hh:mm:ss"]).format("hh:mm A");
 								} else {
 									var start_time = "All Day";
 									var start = "170000";
@@ -71,7 +71,7 @@
 								if (item.start_time !== null) {
 									$.each(JSON.parse(item.extra_times), function(i, item) {
 										var start = item.start_time.replace(/:/g,"");
-										$("#events").append("<div class=\""+start+"\"><p>"+moment(item.start_time, ["h:mm:ss"]).format("HH:mm A")+": "+title+"</p><div>");
+										$("#events").append("<div class=\""+start+"\"><p>"+moment(item.start_time, ["hh:mm:ss"]).format("hh:mm A")+": "+title+"</p><div>");
 									});
 								}
 							}	
